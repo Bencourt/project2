@@ -18,7 +18,7 @@ function setupCanvas(canvasElement,analyserNodeRef){
 	canvasWidth = canvasElement.width;
 	canvasHeight = canvasElement.height;
 	// create a gradient that runs top to bottom
-	gradient = utils.getLinearGradient(ctx,0,0,0,canvasHeight,[{percent:0,color:"#bad2dd"},{percent:1,color:"#da6d00"}]);
+	gradient = utils.getLinearGradient(ctx,0,0,0,canvasHeight,[{percent:0,color:"#000"},{percent:.5,color:"#da6d00"},{percent:1,color:"#000"}]);
 	// keep a reference to the analyser node
 	analyserNode = analyserNodeRef;
 	// this is the array where the analyser data will be stored
@@ -47,26 +47,7 @@ function draw(params={}){
         ctx.fillRect(0,0,canvasWidth,canvasHeight);
         ctx.restore();
     }
-	// 4 - draw bars
-	if(params.showBars){
-        let barSpacing = 4;
-        let margin = 5;
-        let screenWidthForBars = canvasWidth - (audioData.length * barSpacing) - margin * 2;
-        let barWidth = screenWidthForBars / audioData.length;
-        let barHeight = 200;
-        let topSpacing = 100;
-        
-        ctx.save();
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-        ctx.strokeStyle = 'rgba(0,0,0,0.5)';
-        
-        for(let i = 0; i < audioData.length; i++){
-            ctx.fillRect(margin + i * (barWidth + barSpacing),topSpacing + 256-audioData[i],barWidth,barHeight);
-            ctx.strokeRect(margin + i * (barWidth + barSpacing),topSpacing + 256-audioData[i],barWidth,barHeight);
-        }
-        ctx.restore();
-    }
-	// 5 - draw circles
+    // 5 - draw circles
 		if(params.showCircles){
             let maxRadius = canvasHeight/4;
             ctx.save();
@@ -76,20 +57,20 @@ function draw(params={}){
                 
                 let circleRadius = percent * maxRadius;
                 ctx.beginPath();
-                ctx.fillStyle = utils.makeColor(255, 111, 111, .34 - percent/3.0);
+                ctx.fillStyle = utils.makeColor(111, 111, 111, .5 - percent/3.0);
                 ctx.arc(canvasWidth/2, canvasHeight/2, circleRadius, 0, 2 * Math.PI, false);
                 ctx.fill();
                 ctx.closePath();
                 
                 ctx.beginPath();
-                ctx.fillStyle = utils.makeColor(0, 0, 255, .10 - percent/10.0);
+                ctx.fillStyle = utils.makeColor(222, 222, 222,.1 - percent/10.0);
                 ctx.arc(canvasWidth/2, canvasHeight/2, circleRadius * 1.5, 0, 2 * Math.PI, false);
                 ctx.fill();
                 ctx.closePath();
                 
                 ctx.save();
                 ctx.beginPath();
-                ctx.fillStyle = utils.makeColor(200, 200, 0, .5 - percent/5.0);
+                ctx.fillStyle = utils.makeColor(0, 0, 0, .5 - percent/5.0);
                 ctx.arc(canvasWidth/2, canvasHeight/2, circleRadius * .5, 0, 2 * Math.PI, false);
                 ctx.fill();
                 ctx.closePath();
@@ -98,6 +79,31 @@ function draw(params={}){
             ctx.restore();
         }
     
+	// 4 - draw bars
+	if(params.showBars){
+        let barSpacing = 4;
+        let margin = 5;
+        let screenWidthForBars = canvasWidth - (audioData.length * barSpacing) - margin * 2;
+        let barWidth = screenWidthForBars / audioData.length;
+        let barHeight = 200;
+        let topSpacing = 0;
+        
+        ctx.save();
+        ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+        ctx.strokeStyle = 'rgba(255,255,255,1)';
+        ctx.translate(canvasWidth/2, canvasHeight/2);
+        for(let i = 0; i < audioData.length; i++){
+            ctx.rotate(-(180/audioData.length) * Math.PI/180);
+            ctx.fillRect(0,0-(audioData[i]),barWidth,audioData[i]/2);
+        }
+        ctx.rotate((360) * Math.PI/180);
+        for(let i = 0; i < audioData.length; i++){
+            ctx.rotate(-(180/audioData.length) * Math.PI/180);
+            ctx.fillRect(0,0-(audioData[i]),barWidth,audioData[i]/2);
+        }
+        ctx.restore();
+    }
+	
     // 6 - bitmap manipulation
 	// TODO: right now. we are looping though every pixel of the canvas (320,000 of them!), 
 	// regardless of whether or not we are applying a pixel effect

@@ -1,6 +1,8 @@
 body {
-	background: #eeeeee;
+	background: #000;
 	font-family: tahoma, verdana, sans serif;
+    color: #fff;
+    text-align: center;
 }
 
 canvas {

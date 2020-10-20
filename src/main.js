@@ -22,7 +22,7 @@ const drawParams = {
 
 // 1 - here we are faking an enumeration
 const DEFAULTS = Object.freeze({
-	sound1  :  "media/New Adventure Theme.mp3"
+	sound1  :  "media/My Chemical Romance - Teenagers.mp3"
 });
 
 function init(){
@@ -95,14 +95,13 @@ function setupUI(canvasElement){
     let circlesCB = document.querySelector("#circlesCB");
     let noiseCB = document.querySelector("#noiseCB");
     let invertCB = document.querySelector("#invertCB");
-    let embossCB = document.querySelector("#embossCB");
     
     gradientCB.checked = true;
     barsCB.checked = true;
     circlesCB.checked = true;
     noiseCB.checked = false;
     invertCB.checked = false;
-    embossCB.checked = false;
+
     
     gradientCB.onchange = e => {
         if(gradientCB.checked){
@@ -148,15 +147,7 @@ function setupUI(canvasElement){
             drawParams.showInvert = false;
         }
     }
-    
-    embossCB.onchange = e => {
-        if(embossCB.checked){
-            drawParams.showEmboss = true;
-        }
-        else{
-            drawParams.showEmboss = false;
-        }
-    }
+
 } // end setupUI
 
 function loop(){
