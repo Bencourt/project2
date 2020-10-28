@@ -9,7 +9,7 @@
 
 import * as utils from './utils.js';
 
-let ctx,canvasWidth,canvasHeight,gradient,analyserNode,audioData;
+let ctx,canvasWidth,canvasHeight,gradient,analyserNode,analyserNodeWaveform,audioData;
 
 
 function setupCanvas(canvasElement,analyserNodeRef){
@@ -21,6 +21,7 @@ function setupCanvas(canvasElement,analyserNodeRef){
 	gradient = utils.getLinearGradient(ctx,0,0,0,canvasHeight,[{percent:0,color:"#000"},{percent:.5,color:"#da6d00"},{percent:1,color:"#000"}]);
 	// keep a reference to the analyser node
 	analyserNode = analyserNodeRef;
+    analyserNodeWaveform = analyserNodeRef;
 	// this is the array where the analyser data will be stored
 	audioData = new Uint8Array(analyserNode.fftSize/2);
 }
@@ -28,9 +29,10 @@ function setupCanvas(canvasElement,analyserNodeRef){
 function draw(params={}){
   // 1 - populate the audioData array with the frequency data from the analyserNode
 	// notice these arrays are passed "by reference" 
-	analyserNode.getByteFrequencyData(audioData);
-	// OR
-	//analyserNode.getByteTimeDomainData(audioData); // waveform data
+    if(params.showBars)
+	   analyserNode.getByteFrequencyData(audioData);
+	else
+	   analyserNodeWaveform.getByteTimeDomainData(audioData); // waveform data
 	
 	// 2 - draw background
 	ctx.save();
@@ -81,10 +83,10 @@ function draw(params={}){
     
 	// 4 - draw bars
 	if(params.showBars){
-        let barSpacing = 4;
+        let barSpacing = 7;
         let margin = 5;
         let screenWidthForBars = canvasWidth - (audioData.length * barSpacing) - margin * 2;
-        let barWidth = screenWidthForBars / audioData.length;
+        let barWidth = screenWidthForBars / (2*audioData.length);
         let barHeight = 200;
         let topSpacing = 0;
         
@@ -94,14 +96,36 @@ function draw(params={}){
         ctx.translate(canvasWidth/2, canvasHeight/2);
         for(let i = 0; i < audioData.length; i++){
             ctx.rotate(-(180/audioData.length) * Math.PI/180);
-            ctx.fillRect(0,0-(audioData[i]),barWidth,audioData[i]/2);
+            ctx.fillRect(0,0-(audioData[i]*1.5),barWidth,audioData[i]/1.5);
         }
         ctx.rotate((360) * Math.PI/180);
         for(let i = 0; i < audioData.length; i++){
             ctx.rotate(-(180/audioData.length) * Math.PI/180);
-            ctx.fillRect(0,0-(audioData[i]),barWidth,audioData[i]/2);
+            ctx.fillRect(0,0-(audioData[i]*1.5),barWidth,audioData[i]/1.5);
         }
         ctx.restore();
+    }
+    //show waveform data
+    else{
+        for(let i=0; i<audioData.length; i++){
+            if(i%5 == 0){
+                ctx.save();
+                ctx.strokeStyle = 'rgba(255,255,255,1)';
+                ctx.beginPath();
+                ctx.moveTo(canvasWidth*.4,canvasHeight*.5);
+                ctx.bezierCurveTo(canvasWidth*.41, audioData[i] - 20, canvasWidth*.59, audioData[i]-20, canvasWidth*.6, canvasHeight*.5);
+                ctx.stroke();
+                ctx.restore();
+
+                ctx.save();
+                ctx.strokeStyle = 'rgba(255,255,255,1)';
+                ctx.beginPath();
+                ctx.moveTo(canvasWidth*.4,canvasHeight*.5);
+                ctx.bezierCurveTo(canvasWidth*.41, audioData[i] + 560, canvasWidth*.59, audioData[i]+560, canvasWidth*.6, canvasHeight*.5);
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
     }
 	
     // 6 - bitmap manipulation
@@ -142,16 +166,16 @@ function draw(params={}){
                     data[i+1] = 255 - green;
                     data[i+2] = 255 - blue;
                 }
+            
+            if(params.showBW)
+                {
+                    let avg = (data[i] + data[i+1] + data[i+2])/3;
+                    data[i] = avg;
+                    data[i+1] = avg;
+                    data[i+2] = avg;
+                }
         } // end for
 	       
-    if(params.showEmboss)
-        {
-            for(let i = 0; i < length; i++)
-                {
-                    if(i%4 == 3)continue;
-                    data[i] = 127 + 2*data[i] - data[i+4] - data[i+width*4];
-                }
-        }
 	// D) copy image data back to canvas
     ctx.putImageData(imageData, 0, 0);
 }

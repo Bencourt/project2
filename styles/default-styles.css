@@ -1,8 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne+Mono&display=swap');
+
 body {
 	background: #000;
-	font-family: tahoma, verdana, sans serif;
+	font-family: "Syne Mono";
     color: #fff;
     text-align: center;
+}
+
+header{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+h1{
+    font-size: 3em;
 }
 
 canvas {
@@ -14,11 +24,18 @@ canvas {
 }
 
 #controls{
-  margin-left: 1rem;
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
 }
 
-#volumeLabel{
-  margin-left: 1rem;
+#controls div{
+    width: 40vw;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
 }
 
 section{
@@ -28,6 +45,13 @@ section{
 #playButton{
   font-size: 1.2rem;
   width: 6rem;
+    font-family: "Syne Mono";
+}
+
+button{
+    border: 2px solid white;
+    background-color: black;
+    color: white;
 }
 
 button[data-playing="yes"]:after{
@@ -40,5 +64,28 @@ button[data-playing="no"]:after{
 
 #fsButton{
   font-size: 1.2rem;
-  width: 8rem;
+  width: 10rem;
+    font-family: "Syne Mono";
 }
+
+/*slider style adapted from w3schools range slider tutorial:
+https://www.w3schools.com/howto/howto_js_rangeslider.asp*/
+
+    input[type="range"]{
+      -webkit-appearance: none;
+      width: 80%;
+      height: 15px;
+      border-radius: 10px;  
+      background: #fff;
+      outline: none;
+
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%; 
+      background: #da6d00;
+    }

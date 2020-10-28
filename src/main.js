@@ -17,7 +17,8 @@ const drawParams = {
     showCircles : true,
     showNoise : false,
     showInvert : false,
-    showEmboss : false
+    showEmboss : false,
+    showBW: false
 };
 
 // 1 - here we are faking an enumeration
@@ -67,6 +68,12 @@ function setupUI(canvasElement){
     let volumeSlider = document.querySelector("#volumeSlider");
     let volumeLabel = document.querySelector("#volumeLabel");
     
+    let bassSlider = document.querySelector("#bassSlider");
+    let bassLabel = document.querySelector("#bassLabel");
+    
+    let trebleSlider = document.querySelector("#trebleSlider");
+    let trebleLabel = document.querySelector("#trebleLabel");
+    
     //add .oninput event to slider
     volumeSlider.oninput = e =>{
         //set the gain
@@ -75,8 +82,34 @@ function setupUI(canvasElement){
         volumeLabel.innerHTML = Math.round((e.target.value/2 * 100));
     };
     
+    
+    
 	//set value of label to match initial value of slider
     volumeSlider.dispatchEvent(new Event("input"));
+    
+    bassSlider.oninput = e =>{
+        //set the gain
+        audio.setBass(e.target.value);
+        //update value label
+        bassLabel.innerHTML = Math.round((e.target.value/15 * 100));
+    };
+    
+    
+    
+	//set value of label to match initial value of slider
+    bassSlider.dispatchEvent(new Event("input"));
+    
+    trebleSlider.oninput = e =>{
+        //set the gain
+        audio.setHigh(e.target.value);
+        //update value label
+        trebleLabel.innerHTML = Math.round((e.target.value/15 * 100));
+    };
+    
+    
+    
+	//set value of label to match initial value of slider
+    trebleSlider.dispatchEvent(new Event("input"));
     
     //D - hookup track <select>
     let trackSelect = document.querySelector("#trackSelect");
@@ -84,23 +117,29 @@ function setupUI(canvasElement){
     trackSelect.onchange = e => {
         audio.loadSoundFile(e.target.value);
         // pause the current track if it is playing
-        if(playButton.dataset.playing = "yes"){
+        document.querySelector("#time").innerHTML = "0:00";
+        audio.audioCtx.currentTime = 0;
+        if(playButton.dataset.playing == "yes"){
             playButton.dispatchEvent(new MouseEvent("click"));
         };
     };
     
     //set up checkboxes
     let gradientCB = document.querySelector("#gradientCB");
-    let barsCB = document.querySelector("#barsCB");
+    let barsCB = document.querySelector("#barsRb");
+    let wavesCB = document.querySelector("#wavesRb");
     let circlesCB = document.querySelector("#circlesCB");
     let noiseCB = document.querySelector("#noiseCB");
     let invertCB = document.querySelector("#invertCB");
+    let radioButtons = document.getElementsByName("bars");
+    let bwCB = document.querySelector("#bwCB");
     
     gradientCB.checked = true;
     barsCB.checked = true;
     circlesCB.checked = true;
     noiseCB.checked = false;
     invertCB.checked = false;
+    bwCB.checked = false;
 
     
     gradientCB.onchange = e => {
@@ -120,6 +159,16 @@ function setupUI(canvasElement){
             drawParams.showBars = false;
         }
     }
+    
+    wavesCB.onchange = e => {
+        if(wavesCB.checked){
+            drawParams.showBars = false;
+        }
+        else{
+            drawParams.showBars = true;
+        }
+    }
+    
     
     circlesCB.onchange = e => {
         if(circlesCB.checked){
@@ -147,12 +196,35 @@ function setupUI(canvasElement){
             drawParams.showInvert = false;
         }
     }
+    
+    bwCB.onchange = e => {
+        if(bwCB.checked){
+            drawParams.showBW = true;
+        }
+        else{
+            drawParams.showBW = false;
+        }
+    }
 
 } // end setupUI
 
 function loop(){
-/* NOTE: This is temporary testing code that we will delete in Part II */
 	requestAnimationFrame(loop);
+    
+    let audioTime = document.querySelector("#time");
+    if(playButton.dataset.playing == "yes")
+        {
+        let seconds = Math.floor(audio.audioCtx.currentTime);
+        let minutes = 0;
+        if(seconds > 60)
+            {
+                minutes = Math.floor(seconds/60);
+            }
+            if((seconds - (minutes *60)) < 10)
+                audioTime.innerHTML = minutes + ":0" + (seconds - (minutes *60));
+            else
+                audioTime.innerHTML = minutes + ":" + (seconds - (minutes *60));
+        }
     
 	canvas.draw(drawParams);
 }

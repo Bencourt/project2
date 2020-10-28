@@ -2,44 +2,68 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<title>Audio Visualizer</title>
+	<title>Lincourt Radial Audio Visualizer</title>
 	<link href="styles/default-styles.css" type="text/css" rel="stylesheet" />
 	<script src="./src/loader.js" type="module"></script>
 </head>
 <body>
+    <header>
+        <h1>Radial Audio Visualizer</h1>
+        <h3>An audio visualizer built around a love of circles and curves</h3>
+    </header>
 <main>
-	<canvas width="800" height="400"></canvas>
+	<canvas width="1900" height="800"></canvas>
 	<div id="controls">
-		<section>
-			<button id="playButton" data-playing="no"></button>
-			<button id="fsButton">Full Screen</button>
-		
-			<label>Track: 
-				<select id="trackSelect">
-                    <option value="media/Lake Shore Drive - Aliotta Haynes Jeremiah.mp3">Lake Shore Drive</option>
-                    <option value="media/My Chemical Romance - Teenagers.mp3" selected>Teenagers</option>
-					<option value="media/New Adventure Theme.mp3">New Adventure Theme</option>
-					<option value="media/Peanuts Theme.mp3">Peanuts Theme</option>
-					<option value="media/The Picard Song.mp3">The Picard Song</option>
+        <div>
+            <section>
+                Volume: <input type="range" id="volumeSlider" min="0" max="2" value="1" step="0.01">
+                <span id="volumeLabel">???</span>
+            </section>
+            <section>
+                Bass: <input type="range" id="bassSlider" min="0" max="15" value="0" step="0.1">
+                <span id="bassLabel">???</span>
+            </section>
+            <section>
+                Treble: <input type="range" id="trebleSlider" min="0" max="15" value="0" step="0.1">
+                <span id="trebleLabel">???</span>
+            </section>
+        </div>
+        <div>
+            <section>
+                <h2>Playback time:</h2><h2 id="time">0:00</h2>
+            </section>
+            <section>
+                <button id="playButton" data-playing="no"></button>
+                <button id="fsButton">Full Screen</button>
 
-                    
-				</select>
-			</label>
-		</section>
-		
-		<section>
-			Volume: <input type="range" id="volumeSlider" min="0" max="2" value="1" step="0.01">
-			<span id="volumeLabel">???</span>
-		</section>
-        <section>
-            <span><input type="checkbox" id="gradientCB"><label for="gradientCB">Show Gradient</label></span>
-            <span><input type="checkbox" id="barsCB"><label for="barsCB">Show Bars</label></span>
-            <span><input type="checkbox" id="circlesCB"><label for="circlesCB">Show Circles</label></span>
-            <!-- we'll use this 4th checkbox soon! -->
-            <span><input type="checkbox" id="noiseCB"><label for="noiseCB">Show Noise</label></span>
-             <span><input type="checkbox" id="invertCB"><label for="invertCB">Show Invert</label></span>
-        </section>
+                <label>Track: 
+                    <select id="trackSelect">
+                        <option value="media/Lake Shore Drive - Aliotta Haynes Jeremiah.mp3">Lake Shore Drive</option>
+                        <option value="media/My Chemical Romance - Teenagers.mp3" selected>Teenagers</option>
+                        <option value="media/New Adventure Theme.mp3">New Adventure Theme</option>
+                        <option value="media/Peanuts Theme.mp3">Peanuts Theme</option>
+                        <option value="media/The Picard Song.mp3">The Picard Song</option>
+
+
+                    </select>
+                </label>
+            </section>
+            <section>
+            <span><input type="radio" id="barsRb" name="bars"><label for="barsRb">Show Frequency Data (Bars)</label></span>
+            <span><input type="radio" id="wavesRb" name="bars"><label for="wavesRb">Show Waveform Data (Curves)</label></span>
+            </section>
+            <section>
+                <span><input type="checkbox" id="gradientCB"><label for="gradientCB">Show Gradient</label></span>
+                <span><input type="checkbox" id="circlesCB"><label for="circlesCB">Show Circles</label></span>
+                <!-- we'll use this 4th checkbox soon! -->
+                <span><input type="checkbox" id="noiseCB"><label for="noiseCB">Show Noise</label></span>
+                 <span><input type="checkbox" id="invertCB"><label for="invertCB">Show Invert</label></span>
+                <span><input type="checkbox" id="bwCB"><label for="bwCB">Show Greyscale</label></span>
+            </section>
+        </div>
 	</div>
 </main>
+    <footer>
+    </footer>
 </body>
 </html>
